@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-export const GetProgress = async (
+export const getProgress = async (
   userId: string,
   courseId: string
 ): Promise<number> => {

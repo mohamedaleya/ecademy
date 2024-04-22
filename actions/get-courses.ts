@@ -1,4 +1,4 @@
-import { GetProgress } from "@/actions/get-progress";
+import { getProgress } from "@/actions/get-progress";
 import { Category, Course } from "@prisma/client";
 
 import { db } from "@/lib/db";
@@ -60,7 +60,7 @@ export const getCourses = async ({
             };
           }
 
-          const progressPercentage = await GetProgress(userId, course.id);
+          const progressPercentage = await getProgress(userId, course.id);
 
           return {
             ...course,
