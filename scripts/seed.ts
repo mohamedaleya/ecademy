@@ -1,6 +1,13 @@
 const { PrismaClient } = require("@prisma/client");
 
-const database = new PrismaClient();
+const database = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+  log: ["query", "info", "warn", "error"],
+});
 
 async function main() {
   try {

@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: ecademy
+      MYSQL_ROOT_PASSWORD: ecademy321
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - ecademy_data:/var/lib/mysql
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+
+  app:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+    working_dir: /app
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mysql://root:ecademy321@db:3306/ecademy"
+
+volumes:
+  ecademy_data:
