@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   db:
     image: mysql:8.0
@@ -22,16 +21,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nextjs
-    working_dir: /app
     ports:
       - "3001:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
+    # volumes:
+    #   - .:/app
+    #   - /app/node_modules
+    env_file:
+      - .env.production
     depends_on:
       - db
-    environment:
-      DATABASE_URL: "mysql://root:ecademy321@db:3306/ecademy"
+    image: "ghcr.io/mohamedaleya/ecademy:0.0.1"
 
 volumes:
   ecademy_data:
