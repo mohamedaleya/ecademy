@@ -11,15 +11,11 @@ export default function UploadForm({ courseId, chapterId }: UploadFormProps) {
     const formData = new FormData();
     formData.append("file", event.currentTarget.file.files[0]);
 
-    console.log(formData.get("file"));
+    // console.log(formData.get("file"));
     const response = await axios.patch(
       `/api/courses/${courseId}/chapters/${chapterId}`,
       formData
     );
-
-    const data = response.data;
-    console.log(data);
-    // alert(data.message);
   };
 
   return (

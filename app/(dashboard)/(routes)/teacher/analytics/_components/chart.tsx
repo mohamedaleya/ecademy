@@ -10,6 +10,10 @@ interface ChartProps {
 }
 
 export const Chart = ({ data }: ChartProps) => {
+  if (data.length === 0) {
+    return null;
+  }
+
   return (
     <Card className="py-10">
       <ResponsiveContainer width="100%" height={350}>

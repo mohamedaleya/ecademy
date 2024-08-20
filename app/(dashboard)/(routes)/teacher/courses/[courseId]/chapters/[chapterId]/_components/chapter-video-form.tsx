@@ -5,8 +5,8 @@ import axios from "axios";
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Pencil, PlusCircle, Video } from "lucide-react";
-import { useState } from "react";
+import { Pencil, PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Chapter, MuxData } from "@prisma/client";
 import { FileUpload } from "@/components/file-upload";
@@ -29,9 +29,34 @@ export const ChapterVideoForm = ({
   chapterId,
 }: ChapterVideoFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(
+    initialData.muxData?.status === "ready"
+  );
+
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isVideoReady) {
+      const checkVideoStatus = async () => {
+        try {
+          const response = await axios.get(
+            `/api/courses/${courseId}/chapters/${chapterId}/video-status`
+          );
+          if (response.data.status === "ready") {
+            setIsVideoReady(true);
+          }
+        } catch (error) {
+          console.error("Error checking video status:", error);
+        }
+      };
+
+      const intervalId = setInterval(checkVideoStatus, 10000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [isVideoReady, courseId, chapterId]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -66,16 +91,20 @@ export const ChapterVideoForm = ({
           )}
         </Button>
       </div>
-      {!isEditing &&
-        (!initialData.videoUrl ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
-            <Video className="h-10 w-10 text-slate-500" />
-          </div>
-        ) : (
-          <div className="relative aspect-video mt-2">
-            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
-          </div>
-        ))}
+      {!isEditing && initialData.videoUrl && (
+        <div className="relative aspect-video mt-2">
+          {isVideoReady ? (
+            <MuxPlayer
+              playbackId={initialData?.muxData?.playbackId || ""}
+              className="aspect-video"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-slate-200 rounded-md">
+              <p>Video is processing. Please wait...</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {isEditing && (
         <div>
@@ -92,7 +121,7 @@ export const ChapterVideoForm = ({
           </div>
         </div>
       )}
-      {initialData.videoUrl && !isEditing && (
+      {initialData.videoUrl && !isEditing && !isVideoReady && (
         <div className="text-xs text-muted-foreground mt-2">
           Video can take a few minutes to process. Refresh the page if video
           does not appear.

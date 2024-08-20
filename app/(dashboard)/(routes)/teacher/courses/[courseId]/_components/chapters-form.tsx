@@ -99,7 +99,10 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       {isCreating && (
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit((data) => {
+              onSubmit(data);
+              form.reset();
+            })}
             className="space-y-4 mt-4"
           >
             <FormField
