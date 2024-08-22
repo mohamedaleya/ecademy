@@ -3,7 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
+import {
+  ArrowUpDown,
+  MoreHorizontal,
+  Pencil,
+  Trash,
+  Trash2Icon,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +19,9 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -79,10 +88,20 @@ export const columns: ColumnDef<Course>[] = [
     cell: ({ row }) => {
       const { id } = row.original;
 
+      const onDelete = async () => {
+        try {
+          await axios.delete(`/api/courses/${id}`);
+          toast.success("Course deleted");
+          window.location.reload();
+        } catch {
+          toast.error("Something went wrong");
+        }
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-4 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
@@ -94,6 +113,14 @@ export const columns: ColumnDef<Course>[] = [
                 Edit
               </DropdownMenuItem>
             </Link>
+            {/* delete button */}
+
+            <ConfirmModal onConfirm={onDelete}>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Trash className="h-4 w-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </ConfirmModal>
           </DropdownMenuContent>
         </DropdownMenu>
       );
