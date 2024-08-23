@@ -4,6 +4,7 @@ import { Layout, Compass, List, BarChart } from "lucide-react";
 import { SidebarItem } from "./sidebar-item";
 
 import { usePathname } from "next/navigation";
+import { SheetClose } from "@/components/ui/sheet";
 
 const guestRoutes = [
   {
@@ -11,7 +12,7 @@ const guestRoutes = [
     label: "Dashboard",
     href: "/",
   },
-  { icon: Compass, label: "Browse", href: "/search" },
+  { icon: Compass, label: "Browse", href: "/browse" },
 ];
 
 const teacherRoutes = [

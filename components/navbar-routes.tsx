@@ -3,7 +3,7 @@
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { LogOut, UserCircle } from "lucide-react";
+import { BookMarked, LogOut, UserCircle, UserCog } from "lucide-react";
 import Link from "next/link";
 import { SearchInput } from "./search-input";
 import { isTeacher } from "@/lib/teacher";
@@ -14,7 +14,13 @@ export const NavbarRoutes = () => {
 
   const isTeacherPage = pathname?.startsWith("/teacher");
   const isCoursePage = pathname?.includes("/courses");
-  const isSearchPage = pathname === "/search";
+  const isSearchPage = pathname === "/browse";
+
+  const userButtonAppearance = {
+    elements: {
+      userButtonAvatarBox: "w-9 h-9",
+    },
+  };
 
   return (
     <>
@@ -23,21 +29,22 @@ export const NavbarRoutes = () => {
           <SearchInput />
         </div>
       )}
-      <div className="gap-x-2 ml-auto flex items-center">
+      <div className="gap-x-4 ml-auto flex items-center">
         {isTeacherPage || isCoursePage ? (
           <Link href="/">
-            <Button size="sm" variant="ghost">
-              <LogOut className="h-4 w-4 mr-2" /> Student Mode
+            <Button size="sm" variant="secondary">
+              <BookMarked className="h-4 w-4 mr-2" /> Student Mode
             </Button>
           </Link>
         ) : isTeacher(userId) ? (
           <Link href="/teacher/courses">
-            <Button size="sm" variant="ghost">
+            <Button size="sm" variant="secondary">
+              <UserCog className="h-4 w-4 mr-2" />
               Teacher Mode
             </Button>
           </Link>
         ) : null}
-        <UserButton afterSignOutUrl="/sign-in" />
+        <UserButton appearance={userButtonAppearance} />
       </div>
     </>
   );
