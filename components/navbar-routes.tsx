@@ -3,7 +3,7 @@
 import { useAuth, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { BookMarked, LogOut, UserCircle, UserCog } from "lucide-react";
+import { ArrowLeft, BookMarked, HomeIcon, UserCog } from "lucide-react";
 import Link from "next/link";
 import { SearchInput } from "./search-input";
 import { isTeacher } from "@/lib/teacher";
@@ -30,7 +30,7 @@ export const NavbarRoutes = () => {
         </div>
       )}
       <div className="gap-x-4 ml-auto flex items-center">
-        {isTeacherPage || isCoursePage ? (
+        {isTeacherPage ? (
           <Link href="/">
             <Button size="sm" variant="secondary">
               <BookMarked className="h-4 w-4 mr-2" /> Student Mode
@@ -41,6 +41,12 @@ export const NavbarRoutes = () => {
             <Button size="sm" variant="secondary">
               <UserCog className="h-4 w-4 mr-2" />
               Teacher Mode
+            </Button>
+          </Link>
+        ) : isCoursePage ? (
+          <Link href="/">
+            <Button size="sm" variant="secondary">
+              <HomeIcon className="h-4 w-4 mr-2" /> Dashboard
             </Button>
           </Link>
         ) : null}
