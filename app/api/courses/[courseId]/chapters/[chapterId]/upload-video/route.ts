@@ -78,7 +78,7 @@ export async function PATCH(
       /\.[^/.]+$/,
       ""
     )}-${uniqueSuffix}.${mime.getExtension(video.type)}`;
-    await writeFile(`${uploadDir}/${filename}`, buffer);
+    await writeFile(`${uploadDir}/${filename}`, new Uint8Array(buffer));
     const fileUrl = `${relativeUploadDir}/${filename}`;
 
     const updatedChapter = await db.chapter.update({
